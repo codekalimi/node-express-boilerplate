@@ -1,0 +1,120 @@
+# This is a sample build configuration for all languages.
+# Check our guides at https://confluence.atlassian.com/x/5Q4SMw for more examples.
+# Only use spaces to indent your .yml configuration.
+# -----
+# You can specify a custom docker image from Docker Hub as your build environment.
+# image: docker-image:tag
+        
+image: node:14.16.1
+
+clone:
+  depth: full    # SonarCloud scanner needs the full history to assign issues properly
+
+definitions:
+  services:
+      mongo:
+        image: mongo
+        memory: 512
+      docker:
+        memory: 2048  # reduce memory for docker-in-docker from 1GB to 2048MB
+  caches:
+    sonar: ~/.sonar/cache # Caching SonarCloud artifacts will speed up your build
+  # skipping commit by adding to end of commit
+  steps:
+    - step: &Test-build
+        name: Build
+        caches:
+          - node
+          - sonar
+        services:
+          - mongo
+        script:
+          - ./cicd/scripts/initialScript.sh
+          - pipe: sonarsource/sonarcloud-scan:1.2.0
+            variables:
+              SONAR_TOKEN: ${SONAR_TOKEN}
+          - pipe: sonarsource/sonarcloud-quality-gate:0.1.3
+            variables:
+              SONAR_TOKEN: ${SONAR_TOKEN}
+        artifacts:
+          - latest.zip
+    - step: &Deploy-step
+        name: Upload to S3
+        script:
+          # Test upload
+          - pipe: atlassian/aws-code-deploy:0.2.10
+            variables:
+              AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY}
+              AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_KEY}
+              AWS_DEFAULT_REGION: ${AWS_REGION}
+              COMMAND: "upload"
+              APPLICATION_NAME: ${APPLICATION_NAME}
+              ZIP_FILE: "latest.zip"
+              S3_BUCKET: ${S3_BUCKET}
+              VERSION_LABEL: "Intine-0.0.1"
+    - step: &Push-to-server
+        name: Deploy with CodeDeploy
+        script:
+          # Test deploy
+          - pipe: atlassian/aws-code-deploy:0.2.10
+            variables:
+              AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY}
+              AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_KEY}
+              AWS_DEFAULT_REGION: ${AWS_REGION}
+              S3_BUCKET: ${S3_BUCKET}
+              COMMAND: "deploy"
+              APPLICATION_NAME: ${APPLICATION_NAME}
+              DEPLOYMENT_GROUP: ${DEPLOYMENT_GROUP}
+              IGNORE_APPLICATION_STOP_FAILURES: "true"
+              FILE_EXISTS_BEHAVIOR: "OVERWRITE"
+              WAIT: "true"
+              VERSION_LABEL: "Intine-0.0.1"
+    - step: &email-sending
+        name: Sending email
+        script:
+          # Test deploy
+          - pipe: atlassian/email-notify:0.4.4
+            variables:
+              USERNAME: ${SENDGRID_USERNAME}
+              PASSWORD: ${SENDGRID_PASSWORD}
+              FROM: ${SENDGRID_FROM_USERNAME}
+              TO: "backend_alerts@applaunch.io"
+              HOST: ${SMTP_HOST}
+              PORT: ${SMTP_PORT}
+              BODY_HTML: "./cicd/scripts/emailTemplate.html"
+
+
+pipelines:
+  default:
+    - step:
+        <<: *Test-build
+        deployment: Test-build
+
+  branches:
+    staging:
+      - step:
+          <<: *Test-build
+          deployment: staging-build
+      - step:
+          <<: *Deploy-step
+          deployment: staging-upload-s3
+      - step:
+          <<: *Push-to-server
+          deployment: staging-codedeploy
+      - step:
+          <<: *email-sending
+          deployment: staging-email-sending
+
+    release/*:
+      - step:
+          <<: *Test-build
+          deployment: production-build
+      - step:
+          <<: *Deploy-step
+          deployment: production-upload-s3
+      - step:
+          <<: *Push-to-server
+          deployment: production-codedeploy
+      - step:
+          <<: *email-sending
+          deployment: production-email-sending

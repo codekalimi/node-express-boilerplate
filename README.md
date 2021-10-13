@@ -1,45 +1,104 @@
-**Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**
+# Welcome to Skillook 👋
 
-When you're done, you can delete the content in this README and update the file with details for others getting started with your repository.
+## Requirement
 
-*We recommend that you open this README in another tab as you perform the tasks below. You can [watch our video](https://youtu.be/0ocf7u76WSo) for a full demo of all the steps in this tutorial. Open the video in a new tab to avoid leaving Bitbucket.*
+For development, you will only need Node.js and a node global package, Yarn, installed in your environement.
 
----
+### Node
+- #### Node installation on Windows
 
-## Edit a file
+  Just go on [official Node.js website](https://nodejs.org/) and download the installer.
+Also, be sure to have `git` available in your PATH, `npm` might need it (You can find git [here](https://git-scm.com/)).
 
-You’ll start by editing this README file to learn how to edit a file in Bitbucket.
+- #### Node installation on Ubuntu
 
-1. Click **Source** on the left side.
-2. Click the README.md link from the list of files.
-3. Click the **Edit** button.
-4. Delete the following text: *Delete this line to make a change to the README from Bitbucket.*
-5. After making your change, click **Commit** and then **Commit** again in the dialog. The commit page will open and you’ll see the change you just made.
-6. Go back to the **Source** page.
+  You can install nodejs and npm easily with apt install, just run the following commands.
 
----
+      $ sudo apt-get install curl
+      $ curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+      $ sudo apt-get install -y nodejs
 
-## Create a file
+- #### Other Operating Systems
+  You can find more information about the installation on the [official Node.js website](https://nodejs.org/) and the [official NPM website](https://npmjs.org/).
 
-Next, you’ll add a new file to this repository.
+If the installation was successful, you should be able to run the following command.
 
-1. Click the **New file** button at the top of the **Source** page.
-2. Give the file a filename of **contributors.txt**.
-3. Enter your name in the empty file space.
-4. Click **Commit** and then **Commit** again in the dialog.
-5. Go back to the **Source** page.
+    $ node --version
+    v14.x.x
 
-Before you move on, go ahead and explore the repository. You've already seen the **Source** page, but check out the **Commits**, **Branches**, and **Settings** pages.
+    $ npm --version
+    6.14.6
 
----
 
-## Clone a repository
+### Yarn installation
+  After installing node, this project will need yarn too, so just run the following command.
 
-Use these steps to clone from SourceTree, our client for using the repository command-line free. Cloning allows you to work on your files locally. If you don't yet have SourceTree, [download and install first](https://www.sourcetreeapp.com/). If you prefer to clone from the command line, see [Clone a repository](https://confluence.atlassian.com/x/4whODQ).
+      $ curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+      $ echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+      $ sudo apt-get update
+      $ sudo apt-get install yarn -y
 
-1. You’ll see the clone button under the **Source** heading. Click that button.
-2. Now click **Check out in SourceTree**. You may need to create a SourceTree account or log in.
-3. When you see the **Clone New** dialog in SourceTree, update the destination path and name if you’d like to and then click **Clone**.
-4. Open the directory you just created to see your repository’s files.
+  If the installation was successful, you should be able to run the following command.
 
-Now that you're more familiar with your Bitbucket repository, go ahead and add a new file locally. You can [push your change back to Bitbucket with SourceTree](https://confluence.atlassian.com/x/iqyBMg), or you can [add, commit,](https://confluence.atlassian.com/x/8QhODQ) and [push from the command line](https://confluence.atlassian.com/x/NQ0zDQ).
+    $ yarn --version
+    1.22.5
+
+## Dependencies
+
+  Dependencies used in the application
+
+    app-root-path (v2.2.1),
+    aws-sdk (v2.542.0),
+    bcrypt-nodejs (v0.0.3),
+    bluebird (v3.7.0),
+    body-parser (v1.18.3),
+    chalk (v2.4.2),
+    cors (v2.8.5),
+    cron (v1.7.2),
+    dotenv (v6.1.0),
+    eslint-config-strongloop (v2.1.0),
+    express (v4.16.4),
+    express-fileupload (v1.2.0),
+    express-promise-router (v3.0.3),
+    fcm-node (v1.5.2),
+    helmet (v3.15.0),
+    http-errors (v1.7.3),
+    i18n (v0.13.3),
+    i18n-nodejs (v3.0.0),
+    joi (v14.3.0),
+    jsonwebtoken (v8.4.0),
+    lodash (v4.17.15),
+    moment (v2.24.0),
+    mongoose (v5.3.14),
+    morgan (v1.9.1),
+    nodemailer (v6.3.0),
+    passport (v0.4.0),
+    passport-jwt (v4.0.0),
+    passport-local (v1.0.0),
+    random-string (v0.2.0),
+    request (v2.88.2),
+    socket.io (v3.1.1),
+    winston (v3.2.1),
+    winston-daily-rotate-file (v4.2.1)
+
+## Install
+
+  To install all the dependencies in the project
+    
+    yarn install
+
+## Usage
+
+  To run the backend application
+
+    yarn start
+        OR
+    pm2 start ecosystem.json ( Install pm2 to run this command )
+
+## Run tests
+
+    yarn test
+
+## Author
+
+👤 **APPLAUNCH**
