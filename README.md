@@ -1,4 +1,4 @@
-# Welcome to Skillook 👋
+# Welcome to Project Boilerplate 👋
 
 ## Requirement
 
@@ -101,4 +101,4 @@ If the installation was successful, you should be able to run the following comm
 
 ## Author
 
-👤 **APPLAUNCH**
+👤 **Aamir Kalimi**
